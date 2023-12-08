@@ -1,52 +1,49 @@
-"""Employee pay calculator."""
-"""ENTER YOUR SOLUTION HERE!"""
-
 class Employee:
-    def __init__(self, name, contract_type, salary=0, hours_worked=0, hourly_rate=0, commission=0, bonus_commission=0):
+    def __init__(self, name, **kwargs):
         self.name = name
-        self.contract_type = contract_type
-        self.salary = salary
-        self.hours_worked = hours_worked
-        self.hourly_rate = hourly_rate
-        self.commission = commission
-        self.bonus_commission = bonus_commission
-
+        self.params = kwargs
 
     def get_pay(self):
-        return self.get_contract_pay() + self.get_commission_pay()
-
-    def get_contract_pay(self):
-        if self.contract_type == "salary":
-            return self.salary
-        elif self.contract_type == "hourly":
-            return self.hours_worked * self.hourly_rate
-
-    def get_commission_pay(self):
-        if self.commission > 0 and self.bonus_commission <= 0:
-            return self.commission
-        elif self.commission > 0 and self.bonus_commission > 0:
-            return self.commission * self.bonus_commission
+        total_pay = 0
+        if 'salary' in self.params:
+            total_pay += self.params['salary']
         else:
-            return 0
+            total_pay += self.params['hourly_wage'] * self.params['hours_worked']
+
+        if 'bonus' in self.params:
+            total_pay += self.params['bonus']
+        elif 'contracts_landed' in self.params:
+            total_pay += self.params['contracts_landed'] * self.params['commission_per_contract']
+
+        return total_pay
 
     def __str__(self):
-        return self.name
+        description = f"{self.name} works on a "
+        if 'salary' in self.params:
+            description += f"monthly salary of {self.params['salary']}"
+        else:
+            description += f"contract of {self.params['hours_worked']} hours at {self.params['hourly_wage']}/hour"
+
+        if 'bonus' in self.params:
+            description += f" and receives a bonus commission of {self.params['bonus']}"
+        elif 'contracts_landed' in self.params:
+            description += f" and receives a commission for {self.params['contracts_landed']} contract(s) at {self.params['commission_per_contract']}/contract"
+
+        description += f". Their total pay is {self.get_pay()}."
+        return description
 
 
-# Billie works on a monthly salary of 4000.  Their total pay is 4000.
-billie = Employee('Billie')
 
-# Charlie works on a contract of 100 hours at 25/hour.  Their total pay is 2500.
-charlie = Employee('Charlie')
+billie_params = {'salary': 4000}
+charlie_params = {'hourly_wage': 25, 'hours_worked': 100}
+renee_params = {'salary': 3000, 'contracts_landed': 4, 'commission_per_contract': 200}
+jan_params = {'hourly_wage': 25, 'hours_worked': 150, 'contracts_landed': 3, 'commission_per_contract': 220}
+robbie_params = {'salary': 2000, 'bonus': 1500}
+ariel_params = {'hourly_wage': 30, 'hours_worked': 120, 'bonus': 600}
 
-# Renee works on a monthly salary of 3000 and receives a commission for 4 contract(s) at 200/contract.  Their total pay is 3800.
-renee = Employee('Renee')
-
-# Jan works on a contract of 150 hours at 25/hour and receives a commission for 3 contract(s) at 220/contract.  Their total pay is 4410.
-jan = Employee('Jan')
-
-# Robbie works on a monthly salary of 2000 and receives a bonus commission of 1500.  Their total pay is 3500.
-robbie = Employee('Robbie')
-
-# Ariel works on a contract of 120 hours at 30/hour and receives a bonus commission of 600.  Their total pay is 4200.
-ariel = Employee('Ariel')
+billie = Employee('Billie', **billie_params)
+charlie = Employee('Charlie', **charlie_params)
+renee = Employee('Renee', **renee_params)
+jan = Employee('Jan', **jan_params)
+robbie = Employee('Robbie', **robbie_params)
+ariel = Employee('Ariel', **ariel_params)

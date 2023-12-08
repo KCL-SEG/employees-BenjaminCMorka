@@ -2,11 +2,32 @@
 """ENTER YOUR SOLUTION HERE!"""
 
 class Employee:
-    def __init__(self, name):
+    def __init__(self, name, contract_type, salary=0, hours_worked=0, hourly_rate=0, commission=0, bonus_commission=0):
         self.name = name
+        self.contract_type = contract_type
+        self.salary = salary
+        self.hours_worked = hours_worked
+        self.hourly_rate = hourly_rate
+        self.commission = commission
+        self.bonus_commission = bonus_commission
+
 
     def get_pay(self):
-        pass
+        return self.get_contract_pay() + self.get_commission_pay()
+
+    def get_contract_pay(self):
+        if self.contract_type == "salary":
+            return self.salary
+        elif self.contract_type == "hourly":
+            return self.hours_worked * self.hourly_rate
+
+    def get_commission_pay(self):
+        if self.commission > 0 and self.bonus_commission <= 0:
+            return self.commission
+        elif self.commission > 0 and self.bonus_commission > 0:
+            return self.commission * self.bonus_commission
+        else:
+            return 0
 
     def __str__(self):
         return self.name
